@@ -20,7 +20,7 @@ export default function Navigation() {
 
   const handleAnchorClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
+    href: string,
   ) => {
     e.preventDefault();
     const targetId = href.substring(2); // remove '/#'
@@ -36,9 +36,7 @@ export default function Navigation() {
       }, 100); // Adjust delay if needed
     } else {
       // Already on the home page, just scroll
-      document
-        .getElementById(targetId)
-        ?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     }
     setIsOpen(false);
   };
@@ -50,6 +48,7 @@ export default function Navigation() {
     { href: "/events", label: "Events", type: "route" as const },
     { href: "/#projects-showcase", label: "Projects", type: "anchor" as const },
     { href: "/#contact", label: "Contact", type: "anchor" as const },
+    { href: "/gallery", label: "Gallery", type: "route" as const },
   ];
 
   return (
@@ -85,7 +84,7 @@ export default function Navigation() {
                 >
                   {item.label}
                 </a>
-              )
+              ),
             )}
           </div>
 
@@ -126,7 +125,7 @@ export default function Navigation() {
                   >
                     {item.label}
                   </a>
-                )
+                ),
               )}
             </div>
           </div>
