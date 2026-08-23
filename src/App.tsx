@@ -10,6 +10,7 @@ import Team from "@/pages/team";
 import About from "@/pages/about";
 import Events from "@/pages/events";
 import Gallery from "@/pages/gallery";
+import AdminPage from "@/pages/AdminPage";
 
 function Router() {
   return (
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/events" component={Events} />
       <Route path="/gallery" component={Gallery} />
+      <Route path = "/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
