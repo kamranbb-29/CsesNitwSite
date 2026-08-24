@@ -29,6 +29,13 @@ export default defineConfig({
   },
   appType: "spa",
   server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
+    
     fs: {
       strict: true,
       deny: ["**/.*"],
