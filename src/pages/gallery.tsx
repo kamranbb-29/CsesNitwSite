@@ -13,6 +13,13 @@ type ImageData = {
   uploadedAt?: string;
 };
 
+type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -35,11 +42,38 @@ export default function Gallery() {
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          setCurrentUser(null);
+          return;
+        }
+
+        const data = await response.json();
+        setCurrentUser(data.user);
+      } catch (error) {
+        console.error("Failed to get current user", error);
+        setCurrentUser(null);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  const canManageGallery =
+    currentUser !== null && ["pr"].includes(currentUser.role);
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/image");
+        const response = await fetch("/api/image");
         const data = await response.json();
 
         setImages(data);
@@ -63,8 +97,9 @@ export default function Gallery() {
     formData.append("image", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/image", {
+      const response = await fetch("/api/image", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -82,8 +117,9 @@ export default function Gallery() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/image/${id}`, {
+      const response = await fetch(`/api/image/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -117,52 +153,54 @@ export default function Gallery() {
             </p>
           </motion.div>
 
-          <motion.div
-            className="mb-16"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-xl font-semibold text-green-400 font-mono mb-6 flex items-center gap-2">
-              <span className="text-slate-600">&gt;</span> Upload Media
-            </h2>
+          {canManageGallery && (
+            <motion.div
+              className="mb-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h2 className="text-xl font-semibold text-green-400 font-mono mb-6 flex items-center gap-2">
+                <span className="text-slate-600">&gt;</span> Upload Media
+              </h2>
 
-            <Card className="cyberpunk-glow-card relative">
-              <div className="absolute inset-0 cyberpunk-scan-lines"></div>
+              <Card className="cyberpunk-glow-card relative">
+                <div className="absolute inset-0 cyberpunk-scan-lines"></div>
 
-              <CardContent className="p-6 relative z-10">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <input
-                    type="text"
-                    value={event}
-                    placeholder="Event name"
-                    onChange={(e) => setEvent(e.target.value)}
-                    className="flex-1 bg-black/30 border border-green-400/30 rounded-md px-4 py-2 text-slate-200 placeholder:text-slate-500 outline-none focus:border-green-400 transition-colors"
-                  />
+                <CardContent className="p-6 relative z-10">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <input
+                      type="text"
+                      value={event}
+                      placeholder="Event name"
+                      onChange={(e) => setEvent(e.target.value)}
+                      className="flex-1 bg-black/30 border border-green-400/30 rounded-md px-4 py-2 text-slate-200 placeholder:text-slate-500 outline-none focus:border-green-400 transition-colors"
+                    />
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const selectedFile = e.target.files?.[0];
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const selectedFile = e.target.files?.[0];
 
-                      if (selectedFile) {
-                        setFile(selectedFile);
-                      }
-                    }}
-                    className="flex-1 text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-green-400/10 file:text-green-400 hover:file:bg-green-400/20"
-                  />
+                        if (selectedFile) {
+                          setFile(selectedFile);
+                        }
+                      }}
+                      className="flex-1 text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-green-400/10 file:text-green-400 hover:file:bg-green-400/20"
+                    />
 
-                  <button
-                    onClick={handleUpload}
-                    className="px-6 py-2 rounded-md border border-green-400 text-green-400 hover:bg-green-400/10 transition-colors"
-                  >
-                    Upload
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                    <button
+                      onClick={handleUpload}
+                      className="px-6 py-2 rounded-md border border-green-400 text-green-400 hover:bg-green-400/10 transition-colors"
+                    >
+                      Upload
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -201,12 +239,14 @@ export default function Gallery() {
                             {image.event}
                           </h3>
 
-                          <button
-                            onClick={() => handleDelete(image._id)}
-                            className="text-sm text-red-400 hover:text-red-300 transition-colors"
-                          >
-                            Delete
-                          </button>
+                          {canManageGallery && (
+                            <button
+                              onClick={() => handleDelete(image._id)}
+                              className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
