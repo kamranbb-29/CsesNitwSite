@@ -22,7 +22,6 @@ const AdminUserSchema = new mongoose.Schema(
 
         role : {
             type: String,
-            enum: ["gen_sec", "team_lead", "pr", "editor"],
             required: true,
         }
     },

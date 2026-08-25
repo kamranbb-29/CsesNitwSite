@@ -2,6 +2,40 @@ import { Request, Response } from "express";
 import bycrypt from "bcryptjs";
 import AdminUser from "../models/AdminUser";
 
+export const addAdmin = async (req: Request, res: Response) => {
+    try{
+        const {name, email, password, role} = req.body;
+        if(!email || !password || !name || !role){
+            return res.status(400).json({
+                message: "Email and Password are Required!",
+            });
+        }
+
+         const existingUser = await AdminUser.findOne({email, });
+        if(existingUser){
+            console.log("Admin Already Exists");
+        }
+
+        const pwdHash = await bycrypt.hash(password, 12);
+
+        await AdminUser.create({
+            name,
+            email,
+            pwdHash,
+            role,
+        });
+
+        console.log("Admin Added Successfully!");
+
+        return res.status(201).json({
+            message: "Admin Added Successfully!",
+        });
+    } catch(error){
+        console.log("Error: ", error);
+
+    }
+};
+
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

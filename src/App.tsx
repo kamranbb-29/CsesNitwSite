@@ -13,6 +13,7 @@ import Gallery from "@/pages/gallery";
 import AdminPage from "@/pages/AdminPage";
 import AdminDashboard from "./pages/adminDashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import AddAdminUser from "./pages/AddAdmin";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/gallery" component={Gallery} />
       <Route path = "/admin" component={AdminPage} />
       <Route path = "/adminDashboard" component={() => <ProtectedRoute component={AdminDashboard}/>} />
+      <Route path= "/addAdmin" component={() => <ProtectedRoute component={AddAdminUser}/>} />
       <Route component={NotFound} />
     </Switch>
   );

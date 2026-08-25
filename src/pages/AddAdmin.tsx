@@ -1,141 +1,181 @@
+import { useLocation } from "wouter";
 
-import ParticlesBackground from "@/components/particles-background";
 import Navigation from "@/components/navigation";
+import ParticlesBackground from "@/components/particles-background";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field"
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
 
+const AddAdminUser = () => {
+    const [, navigate] = useLocation();
 
-export default function AddAdmin(){
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+
+        const name = formData.get("name");
+        const email = formData.get("email");
+        const password = formData.get("password");
+        const role = formData.get("role");
+
+        try{
+            const response = await fetch("/api/auth/addAdmin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    role
+                }),
+            });
+
+            const data = await response.json();
+            if(!response.ok){
+                console.log(data.message);
+                return;
+            }
+
+            console.log("Login response:", data);
+
+        } catch(error){
+            console.error(error);
+        }
+    };
+
     return (
-        <div className="min-h-screen">
-            <Navigation />
-            <ParticlesBackground />
-            <Card className="w-full sm:max-w-lg">
-                        <CardHeader>
-                            <CardTitle>
-                                Contact Us
-                            </CardTitle>
-                            <CardDescription>
-                                Contact Us, Give us Feedback, Resolve Queries
-                            </CardDescription>
-                        </CardHeader>
+        <div className="relative min-h-screen overflow-hidden bg-background">
+            <div className="relative z-10">
+                <Navigation />
+                <ParticlesBackground />
+
+
+                <main className="flex min-h-[calc(100vh-80px)] items-center justify-center px-6 py-16">
+                    <div className="w-full max-w-lg">
+
+                        <div className="mb-8 text-center">
+                            <p className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-primary">
+                                Admin Panel
+                            </p>
+
+                            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                                Add Admin User
+                            </h1>
+
+                            <p className="mt-3 text-sm text-muted-foreground">
+                                Create an administrator account for the CSES website.
+                            </p>
+                        </div>
+
+                        <Card className="border-border/50 bg-background/80 shadow-2xl backdrop-blur-md">
+                            <CardHeader>
+                                <CardTitle>Create Account</CardTitle>
+
+                                <CardDescription>
+                                    Enter the details of the new admin user below.
+                                </CardDescription>
+                            </CardHeader>
+
                             <CardContent>
-                                <form id="contact-form" onSubmit={handleSubmit}>
-                                    <FieldGroup>
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.2, delay: 0.2 }}
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="space-y-5"
+                                >
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name">
+                                            Name
+                                        </Label>
+
+                                        <Input
+                                            id="name"
+                                            name="name"
+                                            type="text"
+                                            placeholder="Enter name"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">
+                                            Email
+                                        </Label>
+
+                                        <Input
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            placeholder="admin@csesnitw.org"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">
+                                            Password
+                                        </Label>
+
+                                        <Input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            placeholder="Enter password"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="role">
+                                            Role
+                                        </Label>
+
+                                        <Select name="role" required>
+                                            <SelectTrigger className="w-full max-w-48 bg-slate-900 focus:border-green-500">
+                                                 <SelectValue placeholder = "Select your Query Type"/>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Roles</SelectLabel>
+                                                    <SelectItem value="editor">Editor</SelectItem>
+                                                    <SelectItem value="pr">PR</SelectItem>
+                                                    <SelectItem value="admin">Admin</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-4">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() => navigate("/adminDashboard")}
                                         >
-                                            <Field>
-                                                <FieldLabel htmlFor="username">
-                                                    Name
-                                                </FieldLabel>
-                                                <Input 
-                                                    id = "username"
-                                                    placeholder="John Doe"
-                                                    autoComplete="off"
-                                                    name="username"
-                                                    required
-                                                />
-                                            </Field>
-                                        </motion.div>
-                                         <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.2, delay: 0.3 }}
-                                        >
-                                            <Field>
-                                                <FieldLabel htmlFor="email">
-                                                    Email
-                                                </FieldLabel>
-                                                <Input 
-                                                    id="email"
-                                                    placeholder="example@gmail.com"
-                                                    name="email"
-                                                    type = "email"
-                                                    required
-                                                />
-                                            </Field>
-                                        </motion.div>
-                                        <motion.div
-                                            initial={{ opacity: 0, x: 10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ duration: 0.3, delay: 0.35 }}
-                                        >
-                                            <Field>
-                                                <FieldLabel htmlFor="type">
-                                                    Query Type
-                                                </FieldLabel>
-                                                <Select name="queryType" required>
-                                                    <SelectTrigger className="w-full max-w-48 bg-slate-900 focus:border-green-500">
-                                                        <SelectValue placeholder = "Select your Query Type"/>
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Query Types</SelectLabel>
-                                                            {selectItems.map((item) => (
-                                                                <SelectItem value={item.value}>
-                                                                    {item.label}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                            </Field>
-                                        </motion.div>
-                                        <motion.div
-                                            initial = {{opacity : 0, x : -13}}
-                                            animate = {{opacity : 1, x : 0}}
-                                            transition={{duration : 0.35, delay : 0.4}}
-                                        >
-                                            <Field>
-                                                <FieldLabel htmlFor="description">
-                                                    Description / Query
-                                                </FieldLabel>
-                                                <InputGroup>
-                                                    <InputGroupTextarea 
-                                                        id = "description"
-                                                        placeholder="Enter Your Feedback or Query"
-                                                        className="min-h-24 resize-none border-2 focus:border-green-500 rounded-[10px] bg-slate-900"
-                                                        rows = {6}
-                                                        name="description"
-                                                        required
-                                                    />
-                                                </InputGroup>
-                                                <FieldDescription>
-                                                    Mention any feedback related to recent events, queries about future events or any other CSE related question
-                                                </FieldDescription>
-                                            </Field>
-                                        </motion.div>
-                                    </FieldGroup>
-                                    <ValidationError 
-                                        prefix="Message" 
-                                        field="message"
-                                        errors={state.errors}
-                                    />
+                                            Cancel
+                                        </Button>
+
+                                        <Button type="submit">
+                                            Create Admin
+                                        </Button>
+                                    </div>
                                 </form>
                             </CardContent>
-                        
-                        <CardFooter>
-                            <Field orientation="horizontal">
-                                <Button type="reset" variant = "outline">
-                                    Clear
-                                </Button>
-                                <Button type="submit" form="contact-form" onClick={() =>{
-                                }}>
-                                    Submit
-                                </Button>
-                            </Field>
-                        </CardFooter>
-                    </Card>
-                </div>
-            </motion.div>
+                        </Card>
+                    </div>
+                </main>
+            </div>
         </div>
-    )
-    
-}
+    );
+};
+
+export default AddAdminUser;
