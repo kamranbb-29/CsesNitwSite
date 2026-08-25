@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import ParticlesBackground from "@/components/particles-background";
@@ -13,6 +13,16 @@ export default function AdminAuth() {
   const [success, setSuccess] = useState("");
 
   const [, navigate] = useLocation();
+
+  useEffect(() => {
+    fetch("/api/auth/me", {
+      credentials: "include",
+    }).then((res) => {
+      if(res.ok){
+        navigate("/adminDashboard");
+      }
+    })
+  }, [navigate]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
