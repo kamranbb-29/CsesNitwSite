@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import ParticlesBackground from "@/components/particles-background";
+import { useLocation } from "wouter";
 
 export default function AdminAuth() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,8 @@ export default function AdminAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const [, navigate] = useLocation();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,6 +42,7 @@ export default function AdminAuth() {
       }
 
       setSuccess("Login successful!");
+      navigate("/adminDashboard")
 
       console.log("Login response:", data);
     } catch (error) {

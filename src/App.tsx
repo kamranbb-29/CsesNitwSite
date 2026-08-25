@@ -11,6 +11,8 @@ import About from "@/pages/about";
 import Events from "@/pages/events";
 import Gallery from "@/pages/gallery";
 import AdminPage from "@/pages/AdminPage";
+import AdminDashboard from "./pages/adminDashboard";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 function Router() {
   return (
@@ -21,6 +23,7 @@ function Router() {
       <Route path="/events" component={Events} />
       <Route path="/gallery" component={Gallery} />
       <Route path = "/admin" component={AdminPage} />
+      <Route path = "/adminDashboard" component={() => <ProtectedRoute component={AdminDashboard}/>} />
       <Route component={NotFound} />
     </Switch>
   );

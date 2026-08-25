@@ -1,0 +1,75 @@
+
+import ParticlesBackground from "@/components/particles-background";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import Navigation from "@/components/navigation";
+
+
+
+export default function AdminDashboard() {
+    return (
+        <div className="min-h-screen">
+            <Navigation />
+            <ParticlesBackground />
+
+            <div className="pt-24 pb-16 px-4 flex items-center justify-center">
+                <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+                    <a href="/admin">
+                        <Card className="cyberpunk-glow-card hover-lift relative h-full" >
+                            <div className="absolute inset-0 cyberpunk-scan-lines"></div>
+                            <CardContent className="p-6 relative z-10 flex flex-col h-full">
+                            <div className="flex items-center gap-3 mb-4">
+                                {/* <event.icon className="text-green-500 h-7 w-7 flex-shrink-0" /> */}
+                                <span className="text-xs font-mono text-green-400/70 bg-green-400/10 px-2 py-0.5 rounded">
+                                Add
+                                </span>
+                            </div>
+                            <h3 className="text-xl font-semibold mb-3">
+                                Add Admins
+                            </h3>
+                            <p className="text-sm text-slate-300 flex-1">
+                                Add more CSES members as admins to the website
+                            </p>
+                            </CardContent>
+                        </Card>
+                    </a>
+                    <Card className="cyberpunk-glow-card hover-lift relative h-full">
+                        <div className="absolute inset-0 cyberpunk-scan-lines"></div>
+                        <CardContent className="p-6 relative z-10 flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-4">
+                            {/* <event.icon className="text-green-500 h-7 w-7 flex-shrink-0" /> */}
+                            <span className="text-xs font-mono text-green-400/70 bg-green-400/10 px-2 py-0.5 rounded">
+                            Add
+                            </span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-3">
+                            Add Photos
+                        </h3>
+                        <p className="text-sm text-slate-300 flex-1">
+                            Add CSES event photos to the Gallery
+                        </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="cyberpunk-glow-card hover-lift relative h-full">
+                        <div className="absolute inset-0 cyberpunk-scan-lines"></div>
+                        <CardContent className="p-6 relative z-10 flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-4">
+                            {/* <event.icon className="text-green-500 h-7 w-7 flex-shrink-0" /> */}
+                            <span className="text-xs font-mono text-green-400/70 bg-green-400/10 px-2 py-0.5 rounded">
+                            Add
+                            </span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-3">
+                            Add Editorials
+                        </h3>
+                        <p className="text-sm text-slate-300 flex-1">
+                            Add Blog Posts / Editorials onto the website
+                        </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+            
+        </div>
+    );
+}
